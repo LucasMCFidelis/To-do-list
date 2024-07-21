@@ -1,38 +1,20 @@
-import { ChevronDown, Moon, Pencil, Plus, Save, Search, SunDim, Trash2, X } from 'lucide-react'
-import { FormEvent, useCallback, useState } from "react"
+import { Moon, Pencil, Plus, Save, Search, SunDim, Trash2, X } from 'lucide-react'
+import { FormEvent, useCallback, useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 
 export function App() {
   const [isBlackModeActive, setIsBlackModeActive] = useState(true)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isAddActivityModalOpen, setIsAddActivityModalOpen] = useState(false)
-  const [editId, setEditId] = useState<number | null>(null)
+  const [editId, setEditId] = useState<string | null>(null)
   const [editTitle, setEditTitle] = useState('')
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState('')
+  const [filter, setFilter] = useState('')
   const [activities, setActivities] = useState([
-    {
-      id: 1,
-      title: 'Atividade 1',
-      date: new Date().toISOString(),
-      finally: false
-    },
-    {
-      id: 2,
-      title: 'Atividade 2',
-      date: new Date().toISOString(),
-      finally: false
-    },
-    {
-      id: 3,
-      title: 'Atividade 3',
-      date: new Date().toISOString(),
-      finally: false
-    },
-    {
-      id: 4,
-      title: 'Atividade 1',
-      date: new Date().toISOString(),
-      finally: true
-    },
+    { id: uuidv4(), title: 'Atividade 1', date: new Date().toISOString(), finally: false },
+    { id: uuidv4(), title: 'Atividade 2', date: new Date().toISOString(), finally: false },
+    { id: uuidv4(), title: 'Atividade 3', date: new Date().toISOString(), finally: false },
+    { id: uuidv4(), title: 'Atividade 1', date: new Date().toISOString(), finally: true },
   ])
   const changeThemeScreen = useCallback(() => {
     setIsBlackModeActive(prevState => !prevState)
@@ -49,19 +31,19 @@ export function App() {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
     const title = data.get('title')?.toString()
-    
-    if (!title){
+
+    if (!title) {
       return
     }
     const newActivity = {
-      id: activities.length + 1,
+      id: uuidv4(),
       title,
       date: new Date().toISOString(),
       finally: false
     }
-    
-    setActivities([
-      ...activities,
+
+    setActivities(prevActivities => [
+      ...prevActivities,
       newActivity
     ])
     closeAddActivityModal()
@@ -69,8 +51,7 @@ export function App() {
   }, [])
 
   const completeActivity = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const input = event.target
-    const idThisInput = parseInt(input.value)
+    const idThisInput = event.target.value
     setActivities(prevActivities =>
       prevActivities.map(activity =>
         activity.id === idThisInput ? { ...activity, finally: !activity.finally } : activity
@@ -78,11 +59,11 @@ export function App() {
     )
   }, [])
 
-  const deleteActivity = useCallback((id: number) => {
+  const deleteActivity = useCallback((id: string) => {
     setActivities(prevActivities => prevActivities.filter(activity => activity.id !== id))
   }, [])
 
-  const openEditModal = useCallback((id: number, title: string) => {
+  const openEditModal = useCallback((id: string, title: string) => {
     setEditId(id)
     setEditTitle(title)
     setIsEditModalOpen(true)
@@ -104,21 +85,35 @@ export function App() {
   }, [editId, editTitle, closeEditModal])
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault()
     setSearchTerm(event.target.value)
   }
 
+  const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    event.preventDefault()
+    setFilter(event.target.value);
+  }
+
   const filteredActivities = useCallback(() => {
-    return activities.filter(activity => activity.title.toLowerCase().includes(searchTerm.toLowerCase()))
-  }, [searchTerm, activities])
+    return activities.filter(activity => {
+      if (filter === 'OPEN') {
+        return !activity.finally;
+      }
+      if (filter === 'CLOSE') {
+        return activity.finally;
+      }
+      return true;
+    }).filter(activity => activity.title.toLowerCase().includes(searchTerm.toLowerCase()));
+  }, [searchTerm, filter, activities])
 
   return (
-    <div className={`h-screen w-screen flex flex-wrap items-start justify-center transition-colors ${isBlackModeActive ? 'bg-zinc-800 text-zinc-200' : 'bg-zinc-200 text-zinc-900'}`}>
+    <div className={`min-h-screen max-w-screen flex flex-wrap items-start justify-center transition-colors ${isBlackModeActive ? 'bg-zinc-800 text-zinc-200' : 'bg-zinc-200 text-zinc-900'}`}>
       <div className="w-9/12 flex flex-col gap-5">
         <div className="w-full flex flex-col justify-center items-center gap-3 py-8">
           <h1 className=''>TODO LIST</h1>
           <div className="flex flex-wrap-reverse justify-between w-full gap-5">
             <div className='flex-1 min-w-full sm:min-w-min flex justify-between bg-transparent border border-indigo-300 rounded-lg p-1.5'>
-              <input 
+              <input
                 type="text"
                 onChange={handleSearchChange}
                 className='flex-1 bg-transparent outline-none' />
@@ -126,16 +121,17 @@ export function App() {
                 <Search />
               </button>
             </div>
-            <div className='h-9 w-20 flex items-center justify-center gap-1 px-2 bg-indigo-700 text-zinc-200 rounded-xl'>
-              <select className='w-full'>
+            <div>
+              <select
+                value={filter}
+                onChange={handleFilterChange}
+                className='h-9 w-22 flex items-center justify-center px-2 bg-indigo-700 text-zinc-200 rounded-xl'>
                 <option value="">ALL</option>
-                <option value="">OPEN</option>
-                <option value="">CLOSE</option>
-                <button>aaaaaaaaaaaaaaaaaaaaaaaaaaaaa</button>
+                <option value="OPEN">OPEN</option>
+                <option value="CLOSE">CLOSE</option>
               </select>
-              <ChevronDown className='size-5 text-zinc-200' />
             </div>
-    
+
             {isBlackModeActive ? (
               <button
                 onClick={changeThemeScreen}
@@ -143,8 +139,8 @@ export function App() {
                 <SunDim className='size-8' />
               </button>
             ) : (
-              <button 
-                onClick={changeThemeScreen} 
+              <button
+                onClick={changeThemeScreen}
                 className='flex justify-center items-center bg-indigo-700 text-zinc-200 h-9 w-9 rounded-xl'>
                 <Moon className='size-8' />
               </button>
@@ -199,7 +195,7 @@ export function App() {
                 </div>
               ))}
             </div>
-          ): (
+          ) : (
             <div className="flex flex-col items-center gap-5">
               <img src="/empty.svg" alt="List is empty" />
               <h2>Empty...</h2>
@@ -208,10 +204,10 @@ export function App() {
 
         </div>
         <div className='flex justify-end'>
-          <button 
+          <button
             onClick={openAddActivityModal}
             className='bg-indigo-700 text-zinc-200 rounded-full p-2'>
-            <Plus className='size-8'/>
+            <Plus className='size-8' />
           </button>
         </div>
       </div>
@@ -219,9 +215,9 @@ export function App() {
       {isEditModalOpen && (
         <div className='fixed inset-0 bg-black/60 flex items-center justify-center'>
           <div className={`w-52 sm:w-[450px] rounded-md ${isBlackModeActive ? 'bg-zinc-800' : 'bg-zinc-200'}`}>
-            <input 
-              type="text" 
-              value={editTitle} 
+            <input
+              type="text"
+              value={editTitle}
               onChange={(e) => setEditTitle(e.target.value)}
             />
             <button
@@ -237,15 +233,15 @@ export function App() {
           </div>
         </div>
       )}
-      
+
       {isEditModalOpen && (
         <div className='fixed inset-0 bg-black/60 flex items-center justify-center'>
           <div className={`w-52 sm:w-[450px] py-5 px-8 space-y-10 rounded-md ${isBlackModeActive ? 'bg-zinc-800' : 'bg-zinc-200'}`}>
             <div className='flex flex-col items-center gap-2'>
               <h2>EDIT NOTE</h2>
               <input
-                type="text" 
-                value={editTitle} 
+                type="text"
+                value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
                 className='w-full'
               />

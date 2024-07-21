@@ -6,6 +6,6 @@
   min-width: 0;
 }
 
-input, select{
+input{
   all: unset;
 }
