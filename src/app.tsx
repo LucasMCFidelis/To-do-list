@@ -3,6 +3,7 @@ import { FormEvent, useCallback, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { ButtonActionActivity } from './components/buttonActionActivity'
 import { Button } from './components/button'
+import { Modal } from './components/modal'
 
 
 
@@ -154,13 +155,13 @@ export function App() {
 
             {isBlackModeActive ? (
               <Button
-                icon={<SunDim className='size-8'/>}
+                icon={<SunDim className='size-8' />}
                 onClick={changeThemeScreen}
                 className='h-9 w-9'
               />
             ) : (
               <Button
-                icon={<Moon className='size-8'/>}
+                icon={<Moon className='size-8' />}
                 onClick={changeThemeScreen}
                 className='h-9 w-9'
               />
@@ -228,7 +229,7 @@ export function App() {
         </div>
         <div className='flex justify-end'>
           <Button
-            icon={<Plus className='size-8'/>}
+            icon={<Plus className='size-8' />}
             onClick={openAddActivityModal}
             className='p-2 fixed bottom-5 rounded-full'
           />
@@ -236,64 +237,70 @@ export function App() {
       </div>
 
       {isEditModalOpen && (
-        <div className='fixed inset-0 bg-black/60 flex items-center justify-center'>
-          <div className={`w-52 sm:w-[450px] py-5 px-8 space-y-10 rounded-md ${isBlackModeActive ? 'bg-zinc-800' : 'bg-zinc-200'}`}>
-            <div className='flex flex-col items-center gap-2'>
-              <h2>EDIT NOTE</h2>
-              <input
-                type="text"
-                value={editTitle}
-                onChange={(e) => setEditTitle(e.target.value)}
-                className='w-full'
-              />
+        <Modal
+          themeScreenMode={isBlackModeActive}
+          section={() => (
+            <div className="space-y-10">
+              <div className='flex flex-col items-center gap-2'>
+                <h2>EDIT NOTE</h2>
+                <input
+                  type="text"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  className='w-full'
+                />
+              </div>
+              <div className="w-full flex justify-between font-semibold">
+                <Button
+                  icon={<X className='size-6' />}
+                  title='CANCEL'
+                  onClick={closeEditModal}
+                  className='gap-2 p-2 border border-indigo-600 text-indigo-600 bg-transparent hover:border-indigo-700 hover:text-indigo-700 hover:bg-transparent'
+                />
+                <Button
+                  icon={<Save className='size-6' />}
+                  title='SAVE'
+                  onClick={saveEdit}
+                  className='gap-2 p-2'
+                />
+              </div>
             </div>
-            <div className="w-full flex justify-between font-semibold">
-              <Button
-                icon={<X className='size-6'/>}
-                title='CANCEL'
-                onClick={closeEditModal}
-                className='gap-2 p-2 border border-indigo-600 text-indigo-600 bg-transparent hover:border-indigo-700 hover:text-indigo-700 hover:bg-transparent'
-              />
-              <Button
-                icon={<Save className='size-6'/>}
-                title='SAVE'
-                onClick={saveEdit}
-                className='gap-2 p-2'
-              />
-            </div>
-          </div>
-        </div>
+          )}
+        />
       )}
 
       {isAddActivityModalOpen && (
-        <div className='fixed inset-0 bg-black/60 flex items-center justify-center'>
-          <form onSubmit={addActivity} className={`sm:w-[450px] py-5 px-8 space-y-10 rounded-md ${isBlackModeActive ? 'bg-zinc-800' : 'bg-zinc-200'}`}>
-            <div className='flex flex-col items-center gap-2'>
-              <h2>NEW NOTE</h2>
-              <input
-                type="text"
-                name='title'
-                placeholder='Input your note...'
-                required
-                className='w-full'
-              />
-            </div>
-            <div className="w-full flex flex-wrap justify-between font-semibold">
-              <Button
-                icon={<X className='size-6'/>}
-                title='CANCEL'
-                onClick={closeAddActivityModal}
-                className='gap-2 p-2 border border-indigo-600 text-indigo-600 bg-transparent hover:border-indigo-700 hover:text-indigo-700 hover:bg-transparent'
-              />
-              <Button
-                type='submit'
-                icon={<Plus className='size-6'/>}
-                title='APPLY'
-                className='gap-2 p-2'
-              />
-            </div>
-          </form>
-        </div>
+        <Modal
+          themeScreenMode={isBlackModeActive}
+          section={() => (
+            <form onSubmit={addActivity} className='space-y-10'>
+              <div className='flex flex-col items-center gap-2'>
+                <h2>NEW NOTE</h2>
+                <input
+                  type="text"
+                  name='title'
+                  placeholder='Input your note...'
+                  required
+                  className='w-full'
+                />
+              </div>
+              <div className="w-full flex flex-wrap justify-between font-semibold">
+                <Button
+                  icon={<X className='size-6' />}
+                  title='CANCEL'
+                  onClick={closeAddActivityModal}
+                  className='gap-2 p-2 border border-indigo-600 text-indigo-600 bg-transparent hover:border-indigo-700 hover:text-indigo-700 hover:bg-transparent'
+                />
+                <Button
+                  type='submit'
+                  icon={<Plus className='size-6' />}
+                  title='APPLY'
+                  className='gap-2 p-2'
+                />
+              </div>
+            </form>
+          )}
+        />
       )}
     </div>
   )
