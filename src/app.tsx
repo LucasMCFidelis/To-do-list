@@ -112,11 +112,12 @@ export function App() {
         <div className="w-full flex flex-col justify-center items-center gap-3 py-8">
           <h1 className='text-2xl font-semibold'>TODO LIST</h1>
           <div className="flex flex-wrap-reverse justify-between w-full gap-5">
-            <div className='flex-1 min-w-full sm:min-w-min flex justify-between bg-transparent border border-indigo-300 rounded-lg p-1.5'>
+            <div className={`flex-1 min-w-full sm:min-w-min flex justify-between bg-transparent rounded-lg p-1.5 border ${isBlackModeActive ? 'text-zinc-200 border-zinc-200' : 'text-indigo-600 border-indigo-600'}`}>
               <input
                 type="text"
                 onChange={handleSearchChange}
-                className='flex-1 bg-transparent outline-none' />
+                className='flex-1 bg-transparent outline-none'
+              />
               <button>
                 <Search />
               </button>
@@ -126,19 +127,19 @@ export function App() {
                 value={filter}
                 onChange={handleFilterChange}
                 className='h-9 w-22 flex items-center justify-center px-2 bg-indigo-600 hover:bg-indigo-700 text-zinc-200 rounded-xl cursor-pointer'>
-                <option 
+                <option
                   value=""
                   className='text-indigo-600 bg-zinc-200'
                 >
                   ALL
                 </option>
-                <option 
+                <option
                   value="Complete"
                   className='text-indigo-600 bg-zinc-200'
                 >
                   Complete
                 </option>
-                <option 
+                <option
                   value="Incomplete"
                   className='text-indigo-600 bg-zinc-200'
                 >
@@ -163,7 +164,7 @@ export function App() {
           </div>
         </div>
 
-        <div className='w-full'>
+        <div className='w-full sm:w-11/12'>
           {filteredActivities().length > 0 ? (
             <div className='flex flex-col gap-3'>
               {filteredActivities().map(activity => (
@@ -226,7 +227,7 @@ export function App() {
         <div className='flex justify-end'>
           <button
             onClick={openAddActivityModal}
-            className='bg-indigo-600 hover:bg-indigo-700 text-zinc-200 rounded-full p-2'>
+            className='bg-indigo-600 hover:bg-indigo-700 text-zinc-200 rounded-full p-2 fixed bottom-5'>
             <Plus className='size-8' />
           </button>
         </div>
