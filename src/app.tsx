@@ -1,6 +1,10 @@
-import { Moon, Pencil, Plus, Save, Search, SunDim, Trash2, X } from 'lucide-react'
+import { Moon, Pencil, Plus, Save, Search, SunDim, Trash2, User, X } from 'lucide-react'
 import { FormEvent, useCallback, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
+import { ButtonActionActivity } from './components/buttonActionActivity'
+import { Button } from './components/button'
+
+
 
 export function App() {
   const [isBlackModeActive, setIsBlackModeActive] = useState(true)
@@ -97,10 +101,10 @@ export function App() {
   const filteredActivities = useCallback(() => {
     return activities.filter(activity => {
       if (filter === 'Complete') {
-        return !activity.finally;
+        return activity.finally;
       }
       if (filter === 'Incomplete') {
-        return activity.finally;
+        return !activity.finally;
       }
       return true;
     }).filter(activity => activity.title.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -149,17 +153,17 @@ export function App() {
             </div>
 
             {isBlackModeActive ? (
-              <button
+              <Button
+                icon={<SunDim className='size-8'/>}
                 onClick={changeThemeScreen}
-                className='flex justify-center items-center bg-indigo-600 h-9 w-9 rounded-xl hover:bg-indigo-700'>
-                <SunDim className='size-8' />
-              </button>
+                className='h-9 w-9'
+              />
             ) : (
-              <button
+              <Button
+                icon={<Moon className='size-8'/>}
                 onClick={changeThemeScreen}
-                className='flex justify-center items-center bg-indigo-600 hover:bg-indigo-700 text-zinc-200 h-9 w-9 rounded-xl'>
-                <Moon className='size-8' />
-              </button>
+                className='h-9 w-9'
+              />
             )}
           </div>
         </div>
@@ -197,19 +201,17 @@ export function App() {
                         </div>
                       </div>
                     </div>
-                    <div className="space-x-2 text-zinc-600/60">
-                      <button
+                    <div className="space-x-2">
+                      <ButtonActionActivity
+                        icon={Trash2}
                         onClick={() => deleteActivity(activity.id)}
                         className='hover:text-red-500'
-                      >
-                        <Trash2 />
-                      </button>
-                      <button
+                      />
+                      <ButtonActionActivity
+                        icon={Pencil}
                         onClick={() => openEditModal(activity.id, activity.title)}
                         className='hover:text-indigo-600'
-                      >
-                        <Pencil />
-                      </button>
+                      />
                     </div>
                   </div>
                   <div className="w-full h-px bg-indigo-500/30"></div>
@@ -225,35 +227,13 @@ export function App() {
 
         </div>
         <div className='flex justify-end'>
-          <button
+          <Button
+            icon={<Plus className='size-8'/>}
             onClick={openAddActivityModal}
-            className='bg-indigo-600 hover:bg-indigo-700 text-zinc-200 rounded-full p-2 fixed bottom-5'>
-            <Plus className='size-8' />
-          </button>
+            className='p-2 fixed bottom-5 rounded-full'
+          />
         </div>
       </div>
-
-      {isEditModalOpen && (
-        <div className='fixed inset-0 bg-black/60 flex items-center justify-center'>
-          <div className={`w-52 sm:w-[450px] rounded-md ${isBlackModeActive ? 'bg-zinc-800' : 'bg-zinc-200'}`}>
-            <input
-              type="text"
-              value={editTitle}
-              onChange={(e) => setEditTitle(e.target.value)}
-            />
-            <button
-              onClick={saveEdit}
-            >
-              <Save />
-            </button>
-            <button
-              onClick={closeEditModal}
-            >
-              <X />
-            </button>
-          </div>
-        </div>
-      )}
 
       {isEditModalOpen && (
         <div className='fixed inset-0 bg-black/60 flex items-center justify-center'>
@@ -268,20 +248,18 @@ export function App() {
               />
             </div>
             <div className="w-full flex justify-between font-semibold">
-              <button
+              <Button
+                icon={<X className='size-6'/>}
+                title='CANCEL'
                 onClick={closeEditModal}
-                className='flex gap-2 border border-indigo-600 text-indigo-600 hover:border-indigo-700 hover:text-indigo-700 rounded-xl p-2'
-              >
-                <h2 className='hidden sm:block'>CANCEL</h2>
-                <X />
-              </button>
-              <button
+                className='gap-2 p-2 border border-indigo-600 text-indigo-600 bg-transparent hover:border-indigo-700 hover:text-indigo-700 hover:bg-transparent'
+              />
+              <Button
+                icon={<Save className='size-6'/>}
+                title='SAVE'
                 onClick={saveEdit}
-                className='flex gap-2 bg-indigo-600 hover:bg-indigo-700 text-zinc-200 rounded-xl p-2'
-              >
-                <h2 className='hidden sm:block'>SAVE</h2>
-                <Save />
-              </button>
+                className='gap-2 p-2'
+              />
             </div>
           </div>
         </div>
@@ -301,20 +279,18 @@ export function App() {
               />
             </div>
             <div className="w-full flex flex-wrap justify-between font-semibold">
-              <button
+              <Button
+                icon={<X className='size-6'/>}
+                title='CANCEL'
                 onClick={closeAddActivityModal}
-                className='flex gap-2 border border-indigo-600 text-indigo-600 hover:border-indigo-700 hover:text-indigo-700 rounded-xl p-2'
-              >
-                <h2 className='hidden sm:block'>CANCEL</h2>
-                <X />
-              </button>
-              <button
+                className='gap-2 p-2 border border-indigo-600 text-indigo-600 bg-transparent hover:border-indigo-700 hover:text-indigo-700 hover:bg-transparent'
+              />
+              <Button
                 type='submit'
-                className='flex gap-2 bg-indigo-600 hover:bg-indigo-700 text-zinc-200 rounded-xl p-2'
-              >
-                <h2 className='hidden sm:block'>APPLY</h2>
-                <Plus />
-              </button>
+                icon={<Plus className='size-6'/>}
+                title='APPLY'
+                className='gap-2 p-2'
+              />
             </div>
           </form>
         </div>
