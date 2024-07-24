@@ -1,11 +1,9 @@
-import { Moon, Pencil, Plus, Save, Search, SunDim, Trash2, User, X } from 'lucide-react'
+import { Moon, Pencil, Plus, Save, Search, SunDim, Trash2, X } from 'lucide-react'
 import { FormEvent, useCallback, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { ButtonActionActivity } from './components/buttonActionActivity'
 import { Button } from './components/button'
 import { Modal } from './components/modal'
-
-
 
 export function App() {
   const [isBlackModeActive, setIsBlackModeActive] = useState(true)
@@ -239,67 +237,65 @@ export function App() {
       {isEditModalOpen && (
         <Modal
           themeScreenMode={isBlackModeActive}
-          section={() => (
-            <div className="space-y-10">
-              <div className='flex flex-col items-center gap-2'>
-                <h2>EDIT NOTE</h2>
-                <input
-                  type="text"
-                  value={editTitle}
-                  onChange={(e) => setEditTitle(e.target.value)}
-                  className='w-full'
-                />
-              </div>
-              <div className="w-full flex justify-between font-semibold">
-                <Button
-                  icon={<X className='size-6' />}
-                  title='CANCEL'
-                  onClick={closeEditModal}
-                  className='gap-2 p-2 border border-indigo-600 text-indigo-600 bg-transparent hover:border-indigo-700 hover:text-indigo-700 hover:bg-transparent'
-                />
-                <Button
-                  icon={<Save className='size-6' />}
-                  title='SAVE'
-                  onClick={saveEdit}
-                  className='gap-2 p-2'
-                />
-              </div>
-            </div>
-          )}
+          title={'EDIT NOTE'}
+          actionForm={saveEdit}
+          input={
+            <input
+              type="text"
+              value={editTitle}
+              onChange={(e) => setEditTitle(e.target.value)}
+              className='w-full'
+            />
+          }
+          button1={
+            <Button
+              icon={<X className='size-6' />}
+              title='CANCEL'
+              onClick={closeEditModal}
+              className='gap-2 p-2 border border-indigo-600 text-indigo-600 bg-transparent hover:border-indigo-700 hover:text-indigo-700 hover:bg-transparent'
+            />
+          }
+          button2={
+            <Button
+              type='submit'
+              icon={<Save className='size-6' />}
+              title='SAVE'
+              className='gap-2 p-2'
+            />
+          }
         />
       )}
 
       {isAddActivityModalOpen && (
         <Modal
           themeScreenMode={isBlackModeActive}
-          section={() => (
-            <form onSubmit={addActivity} className='space-y-10'>
-              <div className='flex flex-col items-center gap-2'>
-                <h2>NEW NOTE</h2>
-                <input
-                  type="text"
-                  name='title'
-                  placeholder='Input your note...'
-                  required
-                  className='w-full'
-                />
-              </div>
-              <div className="w-full flex flex-wrap justify-between font-semibold">
-                <Button
-                  icon={<X className='size-6' />}
-                  title='CANCEL'
-                  onClick={closeAddActivityModal}
-                  className='gap-2 p-2 border border-indigo-600 text-indigo-600 bg-transparent hover:border-indigo-700 hover:text-indigo-700 hover:bg-transparent'
-                />
-                <Button
-                  type='submit'
-                  icon={<Plus className='size-6' />}
-                  title='APPLY'
-                  className='gap-2 p-2'
-                />
-              </div>
-            </form>
-          )}
+          title={'EDIT NOTE'}
+          actionForm={addActivity}
+          input={
+            <input
+              type="text"
+              name='title'
+              placeholder='Input your note...'
+              required
+              className='w-full'
+            />
+          }
+          button1={
+            <Button
+              icon={<X className='size-6' />}
+              title='CANCEL'
+              onClick={closeAddActivityModal}
+              className='gap-2 p-2 border border-indigo-600 text-indigo-600 bg-transparent hover:border-indigo-700 hover:text-indigo-700 hover:bg-transparent'
+            />
+          }
+          button2={
+            <Button
+              type='submit'
+              icon={<Plus className='size-6' />}
+              title='APPLY'
+              className='gap-2 p-2'
+            />
+          }
         />
       )}
     </div>
