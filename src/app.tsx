@@ -1,9 +1,9 @@
 import { Moon, Pencil, Plus, Save, Search, SunDim, Trash2, X } from 'lucide-react'
-import { FormEvent, useCallback, useState } from 'react'
+import { FormEvent, useCallback, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { ButtonActionActivity } from './components/buttonActionActivity'
 import { Button } from './components/button'
 import { Modal } from './components/modal'
+import { Activity } from './components/activity'
 
 export function App() {
   const [isBlackModeActive, setIsBlackModeActive] = useState(true)
@@ -32,6 +32,8 @@ export function App() {
 
   const addActivity = useCallback((event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    console.log("form enviado");
+    
     const data = new FormData(event.currentTarget)
     const title = data.get('title')?.toString()
 
@@ -97,6 +99,17 @@ export function App() {
     setFilter(event.target.value);
   }
 
+  const formRef = useRef<HTMLFormElement>(null);
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>, formRef: React.RefObject<HTMLFormElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      if (formRef.current) {
+        const formEvent = new Event('submit', { cancelable: true, bubbles: true });
+        formRef.current.dispatchEvent(formEvent);
+      }
+    }
+  }
+
   const filteredActivities = useCallback(() => {
     return activities.filter(activity => {
       if (filter === 'Complete') {
@@ -129,7 +142,7 @@ export function App() {
               <select
                 value={filter}
                 onChange={handleFilterChange}
-                className='h-9 w-22 flex items-center justify-center px-2 bg-indigo-600 hover:bg-indigo-700 text-zinc-200 rounded-xl cursor-pointer'>
+                className='h-9 w-22 flex items-center justify-center px-2 bg-indigo-600 hover:bg-indigo-700 text-zinc-200 rounded-xl cursor-pointer outline-none'>
                 <option
                   value=""
                   className='text-indigo-600 bg-zinc-200'
@@ -171,50 +184,25 @@ export function App() {
           {filteredActivities().length > 0 ? (
             <div className='flex flex-col gap-3'>
               {filteredActivities().map(activity => (
-                <div key={activity.id} className="flex flex-col gap-3 font-semibold">
-                  <div className='flex'>
-                    <div className='relative flex-1'>
-                      <input
-                        onChange={completeActivity}
-                        type="checkbox"
-                        checked={activity.finally}
-                        value={activity.id}
-                        className='w-full absolute inset-0 $'
-                      />
-                      <div className="flex justify-between">
-                        <div className="flex gap-3">
-                          {activity.finally ? (
-                            <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <rect x="0.5" y="0.5" width="25" height="25" rx="1.5" fill="#4f46e5" stroke="#4f46e5" />
-                              <mask id="path-2-inside-1_0_1" fill="white">
-                                <path d="M10.9978 18.6488L6.00002 13.7476L15.5593 4L20.5571 8.90124L10.9978 18.6488Z" />
-                              </mask>
-                              <path d="M10.9978 18.6488L9.59745 20.0767L11.0254 21.4771L12.4257 20.0491L10.9978 18.6488ZM12.3982 17.2209L7.40037 12.3196L4.59966 15.1755L9.59745 20.0767L12.3982 17.2209ZM19.1291 7.50089L9.56986 17.2484L12.4257 20.0491L21.985 10.3016L19.1291 7.50089Z" fill="#F7F7F7" mask="url(#path-2-inside-1_0_1)" />
-                            </svg>
-                          ) : (
-                            <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <rect x="0.5" y="0.5" width="25" height="25" rx="1.5" stroke="#4f46e5" />
-                            </svg>
-                          )}
-                          <h2 className='w-36 sm:w-auto'>{activity.title}</h2>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="space-x-2">
-                      <ButtonActionActivity
-                        icon={Trash2}
-                        onClick={() => deleteActivity(activity.id)}
-                        className='hover:text-red-500'
-                      />
-                      <ButtonActionActivity
-                        icon={Pencil}
-                        onClick={() => openEditModal(activity.id, activity.title)}
-                        className='hover:text-indigo-600'
-                      />
-                    </div>
-                  </div>
-                  <div className="w-full h-px bg-indigo-500/30"></div>
-                </div>
+                <Activity.Root key={activity.id}>
+                  <Activity.Content
+                    actionInput={completeActivity}
+                    activity={activity}
+                  >
+                  </Activity.Content>
+                  <Activity.Actions>
+                    <Activity.Action
+                      icon={Trash2}
+                      onClick={() => deleteActivity(activity.id)}
+                      className='hover:text-red-500'
+                    />
+                    <Activity.Action
+                      icon={Pencil}
+                      onClick={() => openEditModal(activity.id, activity.title)}
+                      className='hover:text-indigo-600'
+                    />
+                  </Activity.Actions>
+                </Activity.Root>
               ))}
             </div>
           ) : (
@@ -239,11 +227,13 @@ export function App() {
           themeScreenMode={isBlackModeActive}
           title={'EDIT NOTE'}
           actionForm={saveEdit}
+          formRef={formRef}
           input={
             <input
               type="text"
               value={editTitle}
               onChange={(e) => setEditTitle(e.target.value)}
+              onKeyDown={(e) => handleKeyDown(e, formRef)}
               className='w-full'
             />
           }
@@ -269,14 +259,16 @@ export function App() {
       {isAddActivityModalOpen && (
         <Modal
           themeScreenMode={isBlackModeActive}
-          title={'EDIT NOTE'}
+          title={'ADD NOTE'}
           actionForm={addActivity}
+          formRef={formRef}
           input={
             <input
               type="text"
               name='title'
               placeholder='Input your note...'
               required
+              onKeyDown={(e) => handleKeyDown(e, formRef)}
               className='w-full'
             />
           }
