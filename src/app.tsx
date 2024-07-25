@@ -1,10 +1,11 @@
-import { Pencil, Plus, Save, Search, Trash2, X } from 'lucide-react'
+import { Pencil, Plus, Search, Trash2 } from 'lucide-react'
 import { FormEvent, useCallback, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { Button } from './components/button'
+
 import { Modal } from './components/modal'
 import { Activity } from './components/activity'
 import { Header } from './components/header'
+import { Button } from './components/button'
 
 export function App() {
   const [isBlackModeActive, setIsBlackModeActive] = useState(true)
@@ -128,7 +129,7 @@ export function App() {
       <div className="w-9/12 flex flex-col gap-5">
         <Header.Root title='TO DO LIST'>
           <Header.Search
-            themeScreenMode = {isBlackModeActive}
+            themeScreenMode={isBlackModeActive}
             actionInput={handleSearchChange}
             icon={Search}
           />
@@ -137,7 +138,7 @@ export function App() {
             actionFilter={handleFilterChange}
           />
           <Header.ButtonTheme
-            themeScreenMode = {isBlackModeActive}
+            themeScreenMode={isBlackModeActive}
             changeThemeScreen={changeThemeScreen}
           ></Header.ButtonTheme>
         </Header.Root>
@@ -176,20 +177,20 @@ export function App() {
 
         </div>
         <div className='flex justify-end'>
-          <Button
-            icon={<Plus className='size-8' />}
+          <Button.Root
             onClick={openAddActivityModal}
-            className='p-2 fixed bottom-5 rounded-full'
-          />
+            className='flex justify-center items-center bg-indigo-600 hover:bg-indigo-700 text-zinc-200 p-2 fixed bottom-5 rounded-full'
+          >
+            <Button.Icon icon={Plus} />
+          </Button.Root>
+
         </div>
       </div>
 
-      {isEditModalOpen && (
-        <Modal
+      {/* {isEditModalOpen && (
+        <Modal.Root
           themeScreenMode={isBlackModeActive}
           title={'EDIT NOTE'}
-          actionForm={saveEdit}
-          formRef={formRef}
           input={
             <input
               type="text"
@@ -199,26 +200,74 @@ export function App() {
               className='w-full'
             />
           }
-          button1={
-            <Button
-              icon={<X className='size-6' />}
-              title='CANCEL'
-              onClick={closeEditModal}
-              className='gap-2 p-2 border border-indigo-600 text-indigo-600 bg-transparent hover:border-indigo-700 hover:text-indigo-700 hover:bg-transparent'
-            />
-          }
-          button2={
-            <Button
-              type='submit'
-              icon={<Save className='size-6' />}
-              title='SAVE'
-              className='gap-2 p-2'
-            />
-          }
-        />
-      )}
+          actionForm={saveEdit}
+          formRef={formRef}
+        >
+
+          <Button.Root
+            onClick={closeEditModal}
+            className="border border-indigo-600 text-indigo-600 bg-transparent hover:border-indigo-700 hover:text-indigo-700 hover:bg-transparent"
+          >
+            <Button.Title title="CANCEL" />
+            <Button.Icon icon={X} />
+          </Button.Root>
+
+          <Button.Root
+            type="submit"
+            className="bg-indigo-600 hover:bg-indigo-700 text-zinc-200 "
+          >
+            <Button.Title title="SAVE" />
+            <Button.Icon icon={Save} />
+          </Button.Root>
+
+
+        </Modal.Root>
+      )} */}
 
       {isAddActivityModalOpen && (
+        <Modal.Root
+          themeScreenMode={isBlackModeActive}
+          title={'ADD NOTE'}
+          input={
+            <input
+              type="text"
+              name='title'
+              placeholder='Input your note...'
+              required
+              onKeyDown={(e) => handleKeyDown(e, formRef)}
+              className='w-full'
+            />
+          }
+          actionForm={addActivity}
+          formRef={formRef}>
+          <Modal.Cancel action={closeAddActivityModal}></Modal.Cancel>
+          <Modal.Submit></Modal.Submit>
+
+        </Modal.Root>
+      )}
+      
+      {isEditModalOpen && (
+        <Modal.Root
+          themeScreenMode={isBlackModeActive}
+          title={'EDIT NOTE'}
+          input={
+            <input
+              type="text"
+              value={editTitle}
+              onChange={(e) => setEditTitle(e.target.value)}
+              onKeyDown={(e) => handleKeyDown(e, formRef)}
+              className='w-full'
+            />
+          }
+          actionForm={saveEdit}
+          formRef={formRef}>
+          <Modal.Cancel action={closeEditModal}></Modal.Cancel>
+          <Modal.Submit></Modal.Submit>
+
+        </Modal.Root>
+      )}
+
+      {/* {isAddActivityModalOpen && (
         <Modal
           themeScreenMode={isBlackModeActive}
           title={'ADD NOTE'}
@@ -251,7 +300,7 @@ export function App() {
             />
           }
         />
-      )}
+      )} */}
     </div>
   )
 }

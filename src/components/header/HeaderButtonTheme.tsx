@@ -11,17 +11,20 @@ export function HeaderButtonTheme({ themeScreenMode, changeThemeScreen }: Header
         <>
             {
                 themeScreenMode ? (
-                    <Button
-                        icon={<SunDim className='size-8' />}
+                    <Button.Root 
                         onClick={changeThemeScreen}
-                        className='h-9 w-9'
-                    />
+                        className='h-9 w-9 gap-0 p-0 bg-indigo-600 hover:bg-indigo-700 text-zinc-200'
+                    >
+                        <Button.Icon icon={SunDim}/>                                
+                    </Button.Root>
+    
                 ) : (
-                    <Button
-                        icon={<Moon className='size-8' />}
+                    <Button.Root 
                         onClick={changeThemeScreen}
-                        className='h-9 w-9'
-                    />
+                        className='h-9 w-9 bg-indigo-600 hover:bg-indigo-700 text-zinc-200'
+                    >
+                        <Button.Icon icon={Moon}/>                           
+                    </Button.Root>
                 )
             }
         </>
