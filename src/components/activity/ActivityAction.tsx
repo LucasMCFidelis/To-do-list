@@ -15,14 +15,3 @@ export function ActivityAction({ icon: Icon, ...rest }: ButtonProps ) {
         </button>
     )
 }
-
-{/* <ButtonActionActivity
-                icon={Trash2}
-                onClick={() => deleteActivity(activity.id)}
-                className='hover:text-red-500'
-            />
-            <ButtonActionActivity
-                icon={Pencil}
-                onClick={() => openEditModal(activity.id, activity.title)}
-                className='hover:text-indigo-600'
-            /> */}

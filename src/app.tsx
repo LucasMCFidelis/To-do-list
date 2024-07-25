@@ -1,9 +1,10 @@
-import { Moon, Pencil, Plus, Save, Search, SunDim, Trash2, X } from 'lucide-react'
+import { Pencil, Plus, Save, Search, Trash2, X } from 'lucide-react'
 import { FormEvent, useCallback, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { Button } from './components/button'
 import { Modal } from './components/modal'
 import { Activity } from './components/activity'
+import { Header } from './components/header'
 
 export function App() {
   const [isBlackModeActive, setIsBlackModeActive] = useState(true)
@@ -33,7 +34,7 @@ export function App() {
   const addActivity = useCallback((event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     console.log("form enviado");
-    
+
     const data = new FormData(event.currentTarget)
     const title = data.get('title')?.toString()
 
@@ -125,60 +126,21 @@ export function App() {
   return (
     <div className={`min-h-screen max-w-screen flex flex-wrap items-start justify-center transition-colors ${isBlackModeActive ? 'bg-zinc-800 text-zinc-200' : 'bg-zinc-200 text-zinc-900'}`}>
       <div className="w-9/12 flex flex-col gap-5">
-        <div className="w-full flex flex-col justify-center items-center gap-3 py-8">
-          <h1 className='text-2xl font-semibold'>TODO LIST</h1>
-          <div className="flex flex-wrap-reverse justify-between w-full gap-5">
-            <div className={`flex-1 min-w-full sm:min-w-min flex justify-between bg-transparent rounded-lg p-1.5 border ${isBlackModeActive ? 'text-zinc-200 border-zinc-200' : 'text-indigo-600 border-indigo-600'}`}>
-              <input
-                type="text"
-                onChange={handleSearchChange}
-                className='flex-1 bg-transparent outline-none'
-              />
-              <button>
-                <Search />
-              </button>
-            </div>
-            <div>
-              <select
-                value={filter}
-                onChange={handleFilterChange}
-                className='h-9 w-22 flex items-center justify-center px-2 bg-indigo-600 hover:bg-indigo-700 text-zinc-200 rounded-xl cursor-pointer outline-none'>
-                <option
-                  value=""
-                  className='text-indigo-600 bg-zinc-200'
-                >
-                  ALL
-                </option>
-                <option
-                  value="Complete"
-                  className='text-indigo-600 bg-zinc-200'
-                >
-                  Complete
-                </option>
-                <option
-                  value="Incomplete"
-                  className='text-indigo-600 bg-zinc-200'
-                >
-                  Incomplete
-                </option>
-              </select>
-            </div>
-
-            {isBlackModeActive ? (
-              <Button
-                icon={<SunDim className='size-8' />}
-                onClick={changeThemeScreen}
-                className='h-9 w-9'
-              />
-            ) : (
-              <Button
-                icon={<Moon className='size-8' />}
-                onClick={changeThemeScreen}
-                className='h-9 w-9'
-              />
-            )}
-          </div>
-        </div>
+        <Header.Root title='TO DO LIST'>
+          <Header.Search
+            themeScreenMode = {isBlackModeActive}
+            actionInput={handleSearchChange}
+            icon={Search}
+          />
+          <Header.Filters
+            filter={filter}
+            actionFilter={handleFilterChange}
+          />
+          <Header.ButtonTheme
+            themeScreenMode = {isBlackModeActive}
+            changeThemeScreen={changeThemeScreen}
+          ></Header.ButtonTheme>
+        </Header.Root>
 
         <div className='w-full sm:w-11/12'>
           {filteredActivities().length > 0 ? (
