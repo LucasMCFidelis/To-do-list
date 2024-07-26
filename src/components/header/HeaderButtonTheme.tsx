@@ -17,7 +17,6 @@ export function HeaderButtonTheme({ themeScreenMode, changeThemeScreen }: Header
                     >
                         <Button.Icon icon={SunDim}/>                                
                     </Button.Root>
-    
                 ) : (
                     <Button.Root 
                         onClick={changeThemeScreen}

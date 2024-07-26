@@ -151,8 +151,7 @@ export function App() {
                   <Activity.Content
                     actionInput={completeActivity}
                     activity={activity}
-                  >
-                  </Activity.Content>
+                  />
                   <Activity.Actions>
                     <Activity.Action
                       icon={Trash2}
@@ -181,48 +180,12 @@ export function App() {
             onClick={openAddActivityModal}
             className='flex justify-center items-center bg-indigo-600 hover:bg-indigo-700 text-zinc-200 p-2 fixed bottom-5 rounded-full'
           >
-            <Button.Icon icon={Plus} />
+            <Button.Icon 
+              icon={Plus} 
+            />
           </Button.Root>
-
         </div>
       </div>
-
-      {/* {isEditModalOpen && (
-        <Modal.Root
-          themeScreenMode={isBlackModeActive}
-          title={'EDIT NOTE'}
-          input={
-            <input
-              type="text"
-              value={editTitle}
-              onChange={(e) => setEditTitle(e.target.value)}
-              onKeyDown={(e) => handleKeyDown(e, formRef)}
-              className='w-full'
-            />
-          }
-          actionForm={saveEdit}
-          formRef={formRef}
-        >
-
-          <Button.Root
-            onClick={closeEditModal}
-            className="border border-indigo-600 text-indigo-600 bg-transparent hover:border-indigo-700 hover:text-indigo-700 hover:bg-transparent"
-          >
-            <Button.Title title="CANCEL" />
-            <Button.Icon icon={X} />
-          </Button.Root>
-
-          <Button.Root
-            type="submit"
-            className="bg-indigo-600 hover:bg-indigo-700 text-zinc-200 "
-          >
-            <Button.Title title="SAVE" />
-            <Button.Icon icon={Save} />
-          </Button.Root>
-
-
-        </Modal.Root>
-      )} */}
 
       {isAddActivityModalOpen && (
         <Modal.Root
@@ -239,13 +202,18 @@ export function App() {
             />
           }
           actionForm={addActivity}
-          formRef={formRef}>
-          <Modal.Cancel action={closeAddActivityModal}></Modal.Cancel>
-          <Modal.Submit></Modal.Submit>
-
+          formRef={formRef}
+        >
+          <Modal.Cancel
+            action={closeAddActivityModal}
+          />
+          <Modal.Submit
+            title='APPLY'
+            icon={Plus}
+          />
         </Modal.Root>
       )}
-      
+
       {isEditModalOpen && (
         <Modal.Root
           themeScreenMode={isBlackModeActive}
@@ -260,47 +228,14 @@ export function App() {
             />
           }
           actionForm={saveEdit}
-          formRef={formRef}>
-          <Modal.Cancel action={closeEditModal}></Modal.Cancel>
-          <Modal.Submit></Modal.Submit>
-
+          formRef={formRef}
+        >
+          <Modal.Cancel 
+            action={closeEditModal}
+          />
+          <Modal.Submit/>
         </Modal.Root>
       )}
-
-      {/* {isAddActivityModalOpen && (
-        <Modal
-          themeScreenMode={isBlackModeActive}
-          title={'ADD NOTE'}
-          actionForm={addActivity}
-          formRef={formRef}
-          input={
-            <input
-              type="text"
-              name='title'
-              placeholder='Input your note...'
-              required
-              onKeyDown={(e) => handleKeyDown(e, formRef)}
-              className='w-full'
-            />
-          }
-          button1={
-            <Button
-              icon={<X className='size-6' />}
-              title='CANCEL'
-              onClick={closeAddActivityModal}
-              className='gap-2 p-2 border border-indigo-600 text-indigo-600 bg-transparent hover:border-indigo-700 hover:text-indigo-700 hover:bg-transparent'
-            />
-          }
-          button2={
-            <Button
-              type='submit'
-              icon={<Plus className='size-6' />}
-              title='APPLY'
-              className='gap-2 p-2'
-            />
-          }
-        />
-      )} */}
     </div>
   )
 }

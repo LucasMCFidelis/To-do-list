@@ -11,8 +11,12 @@ export function ModalCancel({ action }: ModalCancelProps) {
             onClick={action}
             className="w-auto border border-indigo-600 text-indigo-600 bg-transparent hover:border-indigo-700 hover:text-indigo-700 hover:bg-transparent"
         >
-            <Button.Title title="CANCEL"/>
-            <Button.Icon icon={X}/>
+            <Button.Title 
+                title="CANCEL"
+            />
+            <Button.Icon 
+                icon={X}
+            />
         </Button.Root>
     )
 }

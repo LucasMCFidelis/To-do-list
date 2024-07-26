@@ -2,7 +2,7 @@ import { ButtonHTMLAttributes, ReactNode } from "react";
 import { twMerge } from 'tailwind-merge'
 
 interface ButtonRootProps extends ButtonHTMLAttributes<HTMLButtonElement>{
-    children: ReactNode,
+    children: ReactNode
 }
 
 export function ButtonRoot({ children, ...rest }: ButtonRootProps ) {
