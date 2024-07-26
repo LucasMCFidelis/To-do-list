@@ -10,9 +10,10 @@ import { Button } from './components/button'
 export function App() {
   const [isBlackModeActive, setIsBlackModeActive] = useState(true)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isAddActivityModalOpen, setIsAddActivityModalOpen] = useState(false)
-  const [editId, setEditId] = useState<string | null>(null)
-  const [editTitle, setEditTitle] = useState('')
+  const [actionActivityId, setActionActivityId] = useState<string | null>(null)
+  const [actionActivityTitle, setActionActivityTitle] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
   const [filter, setFilter] = useState('')
   const [activities, setActivities] = useState([
@@ -66,30 +67,43 @@ export function App() {
     )
   }, [])
 
-  const deleteActivity = useCallback((id: string) => {
-    setActivities(prevActivities => prevActivities.filter(activity => activity.id !== id))
+  const openDeleteModal = useCallback((id: string, title: string) => {
+    setActionActivityId(id)
+    setActionActivityTitle(title)
+    setIsDeleteModalOpen(true)
   }, [])
 
+  const closeDeleteModal = useCallback(() => {
+    setActionActivityId(null)
+    setActionActivityTitle('')
+    setIsDeleteModalOpen(false)
+  }, [])
+
+  const deleteActivity = useCallback(() => {
+    setActivities(prevActivities => prevActivities.filter(activity => activity.id !== actionActivityId))
+    closeDeleteModal()
+  }, [actionActivityId, actionActivityTitle, closeDeleteModal])
+
   const openEditModal = useCallback((id: string, title: string) => {
-    setEditId(id)
-    setEditTitle(title)
+    setActionActivityId(id)
+    setActionActivityTitle(title)
     setIsEditModalOpen(true)
   }, [])
 
   const closeEditModal = useCallback(() => {
-    setEditId(null)
-    setEditTitle('')
+    setActionActivityId(null)
+    setActionActivityTitle('')
     setIsEditModalOpen(false)
   }, [])
 
   const saveEdit = useCallback(() => {
     setActivities(prevActivities =>
       prevActivities.map(activity =>
-        activity.id === editId ? { ...activity, title: editTitle } : activity
+        activity.id === actionActivityId ? { ...activity, title: actionActivityTitle } : activity
       )
     )
     closeEditModal()
-  }, [editId, editTitle, closeEditModal])
+  }, [actionActivityId, actionActivityTitle, closeEditModal])
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault()
@@ -155,7 +169,7 @@ export function App() {
                   <Activity.Actions>
                     <Activity.Action
                       icon={Trash2}
-                      onClick={() => deleteActivity(activity.id)}
+                      onClick={() => openDeleteModal(activity.id, activity.title)}
                       className='hover:text-red-500'
                     />
                     <Activity.Action
@@ -180,8 +194,8 @@ export function App() {
             onClick={openAddActivityModal}
             className='flex justify-center items-center bg-indigo-600 hover:bg-indigo-700 text-zinc-200 p-2 fixed bottom-5 rounded-full'
           >
-            <Button.Icon 
-              icon={Plus} 
+            <Button.Icon
+              icon={Plus}
             />
           </Button.Root>
         </div>
@@ -221,8 +235,8 @@ export function App() {
           input={
             <input
               type="text"
-              value={editTitle}
-              onChange={(e) => setEditTitle(e.target.value)}
+              value={actionActivityTitle}
+              onChange={(e) => setActionActivityTitle(e.target.value)}
               onKeyDown={(e) => handleKeyDown(e, formRef)}
               className='w-full'
             />
@@ -230,10 +244,27 @@ export function App() {
           actionForm={saveEdit}
           formRef={formRef}
         >
-          <Modal.Cancel 
+          <Modal.Cancel
             action={closeEditModal}
           />
-          <Modal.Submit/>
+          <Modal.Submit />
+        </Modal.Root>
+      )}
+
+      {isDeleteModalOpen && (
+        <Modal.Root
+          themeScreenMode={isBlackModeActive}
+          title={`Deseja deletar a nota "${actionActivityTitle}"?`}
+          actionForm={deleteActivity}
+          formRef={formRef}
+        >
+          <Modal.Cancel
+            action={closeDeleteModal}
+          />
+          <Modal.Submit
+            title='DELETE'
+            icon={Trash2}
+          />
         </Modal.Root>
       )}
     </div>

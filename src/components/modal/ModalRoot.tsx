@@ -3,7 +3,7 @@ import { FormEventHandler, ReactElement, ReactNode } from "react"
 interface ModalRootProps {
   themeScreenMode: boolean,
   title: string,
-  input: ReactElement,
+  input?: ReactElement,
   actionForm: FormEventHandler<HTMLFormElement>,
   formRef: React.RefObject<HTMLFormElement>,
   children: ReactNode
